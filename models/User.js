@@ -12,42 +12,33 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      minlength: 5,
-      maxlength: 100,
       unique: true,
     },
     firstName: {
       type: String,
       required: true,
       trim: true,
-      minlength: 2,
-      maxlength: 200,
     },
     lastName: {
       type: String,
       required: true,
       trim: true,
-      minlength: 2,
-      maxlength: 200,
     },
     password: {
       type: String,
       required: true,
       trim: true,
-      minlength: 8,
-      maxlength: 100,
     },
     phone: {
       type: String,
       required: true,
       trim: true,
-      minlength: 8,
-      maxlength: 100,
     },
     profileImage: {
       type: String,
       default: null,
     },
+    
   },
   { timestamps: true }
 );
@@ -63,11 +54,12 @@ const User = mongoose.model("User", UserSchema);
 // Validate Register User
 function validateRegisterUser(obj) {
   const schema = Joi.object({
-    email: Joi.string().trim().min(5).max(100).required().email(),
-    firstName: Joi.string().trim().min(2).max(200).required(),
-    lastName: Joi.string().trim().min(2).max(200).required(),
-    password: passwordComplexity().required(),
-    phone: Joi.string().trim().min(2).max(100).required(),
+    email: Joi.string().trim().required().email(),
+    firstName: Joi.string().trim().required(),
+    lastName: Joi.string().trim().required(),
+    password: Joi.required(),
+    phone: Joi.string().trim().required(),
+    profileImage:Joi.required()
   });
   return schema.validate(obj);
 }
@@ -75,8 +67,8 @@ function validateRegisterUser(obj) {
 // Validate Login User
 function validateLogin(obj) {
   const schema = Joi.object({
-    email: Joi.string().trim().min(5).max(100).required().email(),
-    password: Joi.string().trim().min(6).required(),
+    email: Joi.string().trim().required().email(),
+    password: Joi.string().trim().required(),
     isUser: Joi.bool().required(),
   });
   return schema.validate(obj);

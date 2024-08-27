@@ -13,6 +13,12 @@ const MessageSchema = new mongoose.Schema(
       trim: true,
       minlength: 1,
     },
+    sender:{
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+    },
   },
   { timestamps: true }
 );

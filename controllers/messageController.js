@@ -41,7 +41,7 @@ const getMessage = asyncHandler(async (req, res) => {
  *  @access  private
  */
   const getUniqueUserMessages = asyncHandler(async (req, res) => {
-    const expertId = req.body.id;
+    const expertId = req.user.id;
   
     const messages = await Message.aggregate([
       { $match: { expert: mongoose.Types.ObjectId(expertId) } }, // Match messages for the specific expert
@@ -100,7 +100,8 @@ if(req.body.isUser){
   message = new Message({
     user: req.user.id,
     expert: req.body.id,
-    text: req.body.text
+    text: req.body.text,
+    sender:req.user.id,
   });
 }else{
   let expert = await Expert.findOne({ _id: req.user.id });
@@ -115,7 +116,8 @@ if(req.body.isUser){
   message = new Message({
     user: req.body.id,
     expert: req.user.id,
-    text: req.body.text
+    text: req.body.text,
+    sender:req.user.id,
   });
 }
 

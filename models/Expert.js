@@ -10,49 +10,43 @@ const ExpertSchema = new mongoose.Schema(
         type: String,
         required: true,
         trim: true,
-        minlength: 5,
-        maxlength: 100,
       },
       lastName: {
         type: String,
         required: true,
         trim: true,
-        minlength: 5,
-        maxlength: 100,
       },
     email: {
       type: String,
       required: true,
       trim: true,
-      minlength: 5,
-      maxlength: 100,
       unique: true,
     },
     password: {
       type: String,
       required: true,
       trim: true,
-      minlength: 8,
     },
     address: {
         type: String,
         required: true,
         trim: true,
-        minlength: 8,
-        maxlength: 200,
       },
       experence: {
         type: String,
         required: true,
         trim: true,
-        minlength: 8,
-        maxlength: 1000,
       },
       category: {
         type: [String],
         required: true,
         trim: true,
       },
+      profileImage:{
+        type: String,
+        required: true,
+        trim: true,
+      }
     // wallet: {
     //     type: Joi.number,
     // },
@@ -71,13 +65,14 @@ const Expert = mongoose.model("Expert", ExpertSchema);
 // Validate Register Expert
 function validateRegisterExpert(obj) {
   const schema = Joi.object({
-    email: Joi.string().trim().min(5).max(100).required().email(),
-    firstName: Joi.string().trim().min(5).max(100).required(),
-    lastName: Joi.string().trim().min(5).max(100).required(),
-    password: passwordComplexity().required(),
-    address: Joi.string().trim().min(8).max(200).required(),
-    experence: Joi.string().trim().min(8).max(1000).required(),
-    category:Joi.array().items(Joi.string().trim().min(4).max(100)).required()
+    email: Joi.string().trim().required().email(),
+    firstName: Joi.string().trim().required(),
+    lastName: Joi.string().trim().required(),
+    password: Joi.required(),
+    address: Joi.string().trim().required(),
+    experence: Joi.string().trim().required(),
+    category:Joi.array().items(Joi.string()).required(),
+    profileImage:Joi.required()
    // wallet: Joi.number().trim(),
   });
   return schema.validate(obj);

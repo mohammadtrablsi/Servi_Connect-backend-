@@ -12,17 +12,19 @@ if (!fs.existsSync(ImagesDir)) {
 }
 // Multer configuration
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'images/');
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + path.extname(file.originalname));
-    }
-  });
+  destination: function (req, file, cb) {
+    cb(null, 'images/');  // Ensure this directory exists
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
   const upload = multer({ storage: storage });
+ 
   
   // /api/auth/register
   router.post("/register", upload.single('profileImage'), register);
+
 
 // /api/auth/login
 router.post("/login", login);

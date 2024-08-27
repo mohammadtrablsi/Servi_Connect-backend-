@@ -30,13 +30,13 @@ module.exports.register = asyncHandler(async (req, res) => {
     lastName: req.body.lastName,
     password: req.body.password,
     phone: req.body.phone,
-    profileImage: req.file ? path.basename(req.file.path) : null,
+    profileImage: req.file ? `${req.protocol}://${req.get('host')}/images/${path.basename(req.file.path)}` : null
   });
 
   const result = await user.save();
   const token = user.generateToken();
 
-  res.status(201).json(result);
+  res.status(201).json({ message: "Success", token: token, id: user.id });
 });
 
 /**

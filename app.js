@@ -49,6 +49,8 @@ app.use("/api/message", require("./routes/message"));
 // Serve static files from the "images" directory
 app.use("/images", express.static(path.join(__dirname, "images")));
 
+
+
 // Import routes
 app.use("/api/advertisements", require("./routes/advertisements"));
 

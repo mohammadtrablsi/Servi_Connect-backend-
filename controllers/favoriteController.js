@@ -6,6 +6,9 @@ const {
 const {
     Expert,
   } = require("../models/Expert");
+  const {
+    User,
+  } = require("../models/User");
   
 
 
@@ -30,7 +33,8 @@ const getFavorite = asyncHandler(async (req, res) => {
  */
 const doFavorite = asyncHandler(async (req, res) => {
       let expert = await Expert.findOne({ _id:req.body.id });
-      if (!expert) {
+      let user = await User.findOne({ _id:req.body.id });
+      if (!expert&&!expert) {
         return res.status(400).json({ message: "invalid expert" });
       }
     

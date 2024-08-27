@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const { CatExpert } = require("../models/CateExpert");
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
+const path = require("path");
+
 
 
 /**
@@ -24,21 +26,19 @@ const createExpert = asyncHandler(async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
   req.body.password = await bcrypt.hash(req.body.password, salt);
-  
-    const expert = new Expert({
-        // name: req.body.name,
-        email:req.body.email,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
+  // try {
+  const expert = new Expert({
+    email: req.body.email,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     password: req.body.password,
     address: req.body.address,
     experence: req.body.experence,
-    category:req.body.category,
-    profileImage: req.file ? path.basename(req.file.path) : null,
-
-    });
+    category: req.body.category,
+    profileImage: req.file ? `${req.protocol}://${req.get('host')}/images/${path.basename(req.file.path)}` : null
+});
     const token = expert.generateToken();
-    const result = await expert.save();
+    
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
       req.user = decoded;
       const categoryObjectIds = [];
@@ -62,12 +62,17 @@ const createExpert = asyncHandler(async (req, res) => {
    
 
 
-  
+      const result = await expert.save();
    
    
     const { password, ...other } = result._doc;
   
-    res.status(200).json({ message:'success', token:token });
+    res.status(200).json({ message: "Success", token: token, id: user.id });
+//   } catch (error) {
+//     console.error("Error creating expert:", error);
+//     res.status(500).json({ message: "Server error" });
+// }
+
   });
   
 
@@ -94,10 +99,37 @@ const searchExperts = asyncHandler(async (req, res) => {
   res.status(200).json({data:experts});
 });
 
+/**
+ *  @desc    Get expert profile by ID
+ *  @route   /api/expert/:id
+ *  @method  GET
+ *  @access  public 
+ */
+const getExpertById = asyncHandler(async (req, res) => {
+  const id  = req.user.id;
+
+ 
+
+  try {
+    const expert = await Expert.findById(id).select("-password");
+
+    if (!expert) {
+      return res.status(404).json({ message: "Expert not found" });
+    }
+
+    res.status(200).json( expert );
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 
 
 
 module.exports = {
   searchExperts,
   createExpert,
+  getExpertById,
 };
